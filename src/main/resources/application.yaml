@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: hhplus
   profiles:
@@ -12,11 +14,11 @@ spring:
       max-lifetime: 60000
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    open-in-view: false
-    generate-ddl: false
-    show-sql: false
+    open-in-view: true
+    generate-ddl: true
+    show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
@@ -25,7 +27,9 @@ spring:
 spring.config.activate.on-profile: local, test
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
   datasource:
-    url: jdbc:mysql://localhost:3306/hhplus?characterEncoding=UTF-8&serverTimezone=UTC
-    username: application
-    password: application
+    url: jdbc:mysql://localhost:3306/${MYSQL_DATABASE}?characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: ${MYSQL_USER_PASSWORD}
