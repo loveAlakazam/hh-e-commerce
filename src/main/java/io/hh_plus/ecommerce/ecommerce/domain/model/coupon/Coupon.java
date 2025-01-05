@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,17 +14,30 @@ public class Coupon extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    // 쿠폰 타입
     @Enumerated(EnumType.STRING)
     @Column(name= "coupon_type", nullable = false)
     private CouponType couponType;
 
+    // 쿠폰 재고량
     @Column(name = "current_stock", nullable = false)
     private int currentStock = 0;
 
-    @Column(name = "expired_at")
-    private LocalDateTime expiredAt;
+    // 쿠폰 유효기간(일)
+    @Column(name = "duration", nullable = false)
+    private int duration = 7;
 
-    @Column(name = "published_at")
-    private LocalDateTime publishedAt;
+    // 쿠폰 할인 금액 / 퍼센트
+    /**
+     * 1. couponType = PERCENT 일때
+     *      discount_value 는 할인율(%) 단위로 나타낸다.
+     *      discount_value > 0 && discount_value < 90
+     *
+     * 2. couponType = AMOUNT 일때
+     *      discount_value 는 할인금액(원) 단위로 나타낸다.
+     *      discount_value > 1,000 && discount_value < 50,000
+     */
+    @Column(name = "discount_value", nullable = false)
+    private int discountValue;
 
 }

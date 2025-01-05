@@ -1,11 +1,14 @@
 package io.hh_plus.ecommerce.ecommerce.domain.model.user;
 
 import io.hh_plus.ecommerce.ecommerce.domain.model.common.BaseEntity;
+import io.hh_plus.ecommerce.ecommerce.domain.model.coupon.IssuedCoupon;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -33,8 +36,11 @@ public class User extends BaseEntity {
     @Column(unique = true , nullable = false)
     private String phoneNumber;
 
-    @Column(nullable = false)
-    private int currentPoint = 0; // 기본값 설정
+    // 보유쿠폰
+    // user:issued_coupon = 1:N
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<IssuedCoupon> issuedCoupons = new ArrayList<>();
+
 
    // 검증함수
    private void validateName(String name) {

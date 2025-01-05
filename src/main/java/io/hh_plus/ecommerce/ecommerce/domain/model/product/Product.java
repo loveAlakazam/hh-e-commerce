@@ -2,11 +2,13 @@ package io.hh_plus.ecommerce.ecommerce.domain.model.product;
 
 import io.hh_plus.ecommerce.ecommerce.domain.model.common.BaseEntity;
 import io.hh_plus.ecommerce.ecommerce.domain.model.order.Order;
+import io.hh_plus.ecommerce.ecommerce.domain.model.order.OrderItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -36,8 +38,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private String merchantPhoneNumber;
 
-
-    @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    // order_item:product=1:1
+    @OneToOne(mappedBy= "product" )
+    private OrderItem orderitem;
 }
