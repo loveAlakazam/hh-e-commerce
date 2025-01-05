@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+@Entity
+@Table(name= "order_item")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -27,7 +29,7 @@ public class OrderItem extends BaseEntity {
     // order:order_item=1:N
     @ManyToOne
     @JoinColumn(name="order_id", nullable = false)
-    private Order order;
+    private Orderment order;
 
     // order_item:product=1:1
     @OneToOne

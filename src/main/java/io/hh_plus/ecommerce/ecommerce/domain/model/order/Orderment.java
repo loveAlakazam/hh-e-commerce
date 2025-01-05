@@ -11,10 +11,11 @@ import lombok.Setter;
 
 import java.util.List;
 
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
-public class Order extends BaseEntity {
+public class Orderment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -35,16 +36,12 @@ public class Order extends BaseEntity {
 
     // user:order = 1:N
     @ManyToOne
-    @Column(name= "user_id", nullable = false)
+    @JoinColumn(name= "user_id", nullable = false)
     private User user;
 
     // order:payment = 1:1
     @OneToOne
-    @Column(name="payment_id", nullable = false)
+    @JoinColumn(name="payment_id")
     private Payment payment;
-
-    // order:order_item = 1:N
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems;
 
 }
