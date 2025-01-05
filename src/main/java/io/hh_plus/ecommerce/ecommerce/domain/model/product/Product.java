@@ -1,7 +1,6 @@
 package io.hh_plus.ecommerce.ecommerce.domain.model.product;
 
 import io.hh_plus.ecommerce.ecommerce.domain.model.common.BaseEntity;
-import io.hh_plus.ecommerce.ecommerce.domain.model.order.Order;
 import io.hh_plus.ecommerce.ecommerce.domain.model.order.OrderItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

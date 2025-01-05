@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
  * 유저는 서로다른 종류의 쿠폰을 각각 1개씩만 소유할 수 있다.
  * 유저는 동일한 종류의 쿠폰을 2개이상 소유할 수 없다.
  * */
+@Entity
 @Table(
         name = "issued_coupon",
         uniqueConstraints = {
