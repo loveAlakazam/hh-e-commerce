@@ -7,6 +7,7 @@ import io.hh_plus.ecommerce.ecommerce.domain.model.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Orderment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

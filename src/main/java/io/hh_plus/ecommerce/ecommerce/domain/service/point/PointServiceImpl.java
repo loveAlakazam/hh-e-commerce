@@ -1,7 +1,9 @@
 package io.hh_plus.ecommerce.ecommerce.domain.service.point;
 
+import io.hh_plus.ecommerce.ecommerce.application.exceptions.BusinessException;
 import io.hh_plus.ecommerce.ecommerce.domain.model.point.Point;
-import io.hh_plus.ecommerce.ecommerce.domain.model.user.User;
+import io.hh_plus.ecommerce.ecommerce.domain.service.point.dto.request.ChargePointServiceRequestDto;
+import io.hh_plus.ecommerce.ecommerce.domain.service.user.exception.UserErrorCode;
 import io.hh_plus.ecommerce.ecommerce.repository.point.PointRepository;
 import io.hh_plus.ecommerce.ecommerce.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
@@ -19,14 +21,14 @@ public class PointServiceImpl implements PointService {
 
     // 잔액충전
     @Override
-    public void chargePoint(long userId, int point) {
-        if(point <= 0)
-            throw new IllegalArgumentException("충전 금액은 0보다 커야합니다.");
+    public void chargePoint(ChargePointServiceRequestDto requestDto) {
+        long userId = requestDto.getUserId();
+        int amount = requestDto.getAmount();
 
-        Point userCurrentPoint = pointRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+        Point userCurrentPoint = pointRepository.findByUserId(userId).orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
         // 충전후 금액 = 현재 포인트양 + 충전포인트양(point)
-        int chargePoint = userCurrentPoint.getValue() + point;
+        int chargePoint = userCurrentPoint.getValue() + amount;
         userCurrentPoint.setValue(chargePoint);
 
         // 데이터 업데이트
@@ -36,7 +38,7 @@ public class PointServiceImpl implements PointService {
     // 잔액조회
     @Override
     public Integer getCurrentPoint(long userId) {
-        Point point = pointRepository.findByUserId(userId).orElseThrow(()-> new IllegalArgumentException("존재하지 않은 유저입니다."));
+        Point point = pointRepository.findByUserId(userId).orElseThrow(()-> new BusinessException(UserErrorCode.USER_NOT_FOUND));
         return point.getValue();
     }
 }
