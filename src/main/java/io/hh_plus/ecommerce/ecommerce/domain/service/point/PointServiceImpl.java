@@ -1,7 +1,9 @@
 package io.hh_plus.ecommerce.ecommerce.domain.service.point;
 
+import io.hh_plus.ecommerce.ecommerce.application.exceptions.BusinessException;
 import io.hh_plus.ecommerce.ecommerce.domain.model.point.Point;
 import io.hh_plus.ecommerce.ecommerce.domain.service.point.dto.request.ChargePointServiceRequestDto;
+import io.hh_plus.ecommerce.ecommerce.domain.service.user.exception.UserErrorCode;
 import io.hh_plus.ecommerce.ecommerce.repository.point.PointRepository;
 import io.hh_plus.ecommerce.ecommerce.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class PointServiceImpl implements PointService {
         long userId = requestDto.getUserId();
         int amount = requestDto.getAmount();
 
-        Point userCurrentPoint = pointRepository.findByUserId(userId).orElseThrow(() -> new IllegalArgumentException("존재하지 않은 유저입니다."));
+        Point userCurrentPoint = pointRepository.findByUserId(userId).orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
         // 충전후 금액 = 현재 포인트양 + 충전포인트양(point)
         int chargePoint = userCurrentPoint.getValue() + amount;
@@ -36,7 +38,7 @@ public class PointServiceImpl implements PointService {
     // 잔액조회
     @Override
     public Integer getCurrentPoint(long userId) {
-        Point point = pointRepository.findByUserId(userId).orElseThrow(()-> new IllegalArgumentException("존재하지 않은 유저입니다."));
+        Point point = pointRepository.findByUserId(userId).orElseThrow(()-> new BusinessException(UserErrorCode.USER_NOT_FOUND));
         return point.getValue();
     }
 }

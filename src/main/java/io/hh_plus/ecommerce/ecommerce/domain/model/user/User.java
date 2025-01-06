@@ -1,16 +1,14 @@
 package io.hh_plus.ecommerce.ecommerce.domain.model.user;
 
+import io.hh_plus.ecommerce.ecommerce.application.exceptions.InvalidRequestException;
 import io.hh_plus.ecommerce.ecommerce.domain.model.common.BaseEntity;
-import io.hh_plus.ecommerce.ecommerce.domain.model.coupon.IssuedCoupon;
 import io.hh_plus.ecommerce.ecommerce.domain.model.point.Point;
+import io.hh_plus.ecommerce.ecommerce.domain.service.user.exception.UserErrorCode;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -62,15 +60,15 @@ public class User extends BaseEntity {
      * @param userId long
      */
     public static void validateUserId(long userId) {
-        if(userId <= 0) throw new IllegalArgumentException("유저 식별자는 양수여야합니다.");
+        if(userId <= 0) throw new InvalidRequestException(UserErrorCode.USER_ID_IS_POSITIVE_NUMBER_POLICY);
     }
     /**
      * validateName: 유저명 검증함수
      * @param name String
      */
     public static void validateName(String name) {
-       if(name == null || name.trim().isEmpty()) throw new IllegalArgumentException("이름은 필수입니다.");
-       if(name.length() > MAX_NAME_LENGTH) throw new IllegalArgumentException("이름은 최대 " + MAX_NAME_LENGTH + "자 까지 가능합니다.");
+       if(name == null || name.trim().isEmpty()) throw new InvalidRequestException(UserErrorCode.USER_NAME_IS_REQUIRED_POLICY);
+       if(name.length() > MAX_NAME_LENGTH) throw new InvalidRequestException(UserErrorCode.USER_NAME_IS_LONGER_THAN_MINIMUM_LENGTH_SIZE_POLICY);
    }
 
 

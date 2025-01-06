@@ -1,7 +1,10 @@
 package io.hh_plus.ecommerce.ecommerce.domain.model.point;
 
+import io.hh_plus.ecommerce.ecommerce.application.exceptions.BusinessException;
+import io.hh_plus.ecommerce.ecommerce.application.exceptions.InvalidRequestException;
 import io.hh_plus.ecommerce.ecommerce.domain.model.common.BaseEntity;
 import io.hh_plus.ecommerce.ecommerce.domain.model.user.User;
+import io.hh_plus.ecommerce.ecommerce.domain.service.point.exception.PointErrorCode;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +34,7 @@ public class Point extends BaseEntity {
 
     // 검증함수
     public static void validateChargeAmount(int amount) {
-        if(amount < Point.MINIMUM_CHARGE_AMOUNT) throw new IllegalArgumentException("충전금액은 최소 1000원 이상이어야합니다.");
+        if(amount < Point.MINIMUM_CHARGE_AMOUNT) throw new InvalidRequestException(PointErrorCode.CHARGE_POINT_MINIMUM_POLICY);
     }
 }
 
