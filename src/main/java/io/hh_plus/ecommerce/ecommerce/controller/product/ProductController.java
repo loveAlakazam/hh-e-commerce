@@ -1,6 +1,7 @@
 package io.hh_plus.ecommerce.ecommerce.controller.product;
 
 import io.hh_plus.ecommerce.ecommerce.domain.service.product.ProductService;
+import io.hh_plus.ecommerce.ecommerce.domain.service.product.dto.response.ProductResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,8 @@ public class ProductController {
 
     // 상품 단품 조회 API
     @GetMapping("/{id}")
-    public ResponseEntity<String> getProductDetail(@PathVariable long id) {
-        return ResponseEntity.ok("단일상품 세부정보 조회");
+    public ResponseEntity<ProductResponse> getProductDetail(@PathVariable long id) {
+        return ResponseEntity.ok(productService.getById(id));
     }
 
 

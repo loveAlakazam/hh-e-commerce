@@ -1,7 +1,9 @@
 package io.hh_plus.ecommerce.ecommerce.domain.model.product;
 
+import io.hh_plus.ecommerce.ecommerce.application.exceptions.InvalidRequestException;
 import io.hh_plus.ecommerce.ecommerce.domain.model.common.BaseEntity;
 import io.hh_plus.ecommerce.ecommerce.domain.model.order.OrderItem;
+import io.hh_plus.ecommerce.ecommerce.domain.service.product.exception.ProductErrorCode;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,4 +44,14 @@ public class Product extends BaseEntity {
     // order_item:product=1:1
     @OneToOne(mappedBy= "product" )
     private OrderItem orderitem;
+
+    // 검증함수
+    /**
+     * validateProductId : 상품 식별자 검증함수
+     * @param productId long
+     *
+     */
+    public static void validateProductId(long productId) {
+        if(productId <= 0) throw new InvalidRequestException(ProductErrorCode.PRODUCT_ID_POSITIVE_NUMBER_POLICY);
+    }
 }
