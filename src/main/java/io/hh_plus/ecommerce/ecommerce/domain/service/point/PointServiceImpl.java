@@ -21,7 +21,7 @@ public class PointServiceImpl implements PointService {
 
     // 잔액충전
     @Override
-    public void chargePoint(ChargePointServiceRequestDto requestDto) {
+    public void chargePoint(ChargePointServiceRequestDto requestDto) throws BusinessException {
         long userId = requestDto.getUserId();
         int amount = requestDto.getAmount();
 
