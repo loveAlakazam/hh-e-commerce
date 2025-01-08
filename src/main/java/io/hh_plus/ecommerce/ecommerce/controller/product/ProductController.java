@@ -1,5 +1,7 @@
 package io.hh_plus.ecommerce.ecommerce.controller.product;
 
+import io.hh_plus.ecommerce.ecommerce.domain.model.common.PageResponse;
+import io.hh_plus.ecommerce.ecommerce.domain.model.product.Product;
 import io.hh_plus.ecommerce.ecommerce.domain.service.product.ProductService;
 import io.hh_plus.ecommerce.ecommerce.domain.service.product.dto.response.ProductResponse;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +17,11 @@ public class ProductController {
 
     // 상품 목록 조회 API
     @GetMapping()
-    public ResponseEntity<String> getProducts() {
-        return ResponseEntity.ok("상품목록 조회");
+    public ResponseEntity<PageResponse<ProductResponse>> getProducts(
+        @RequestParam(value = "page", defaultValue = "1") int page
+    ) {
+        PageResponse<ProductResponse> products = productService.getProducts(page);
+        return ResponseEntity.ok(products);
     }
 
 
