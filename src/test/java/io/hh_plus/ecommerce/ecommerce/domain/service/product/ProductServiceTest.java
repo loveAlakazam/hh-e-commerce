@@ -2,6 +2,7 @@ package io.hh_plus.ecommerce.ecommerce.domain.service.product;
 
 import io.hh_plus.ecommerce.ecommerce.application.exceptions.BusinessException;
 import io.hh_plus.ecommerce.ecommerce.application.exceptions.InvalidRequestException;
+import io.hh_plus.ecommerce.ecommerce.domain.model.common.PageResponse;
 import io.hh_plus.ecommerce.ecommerce.domain.model.product.Product;
 import io.hh_plus.ecommerce.ecommerce.domain.service.product.dto.response.ProductResponse;
 import io.hh_plus.ecommerce.ecommerce.domain.service.product.exception.ProductErrorCode;
@@ -13,9 +14,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.*;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
+import static io.hh_plus.ecommerce.ecommerce.domain.model.product.Product.PAGINATION_LIMIT;
 import static io.hh_plus.ecommerce.ecommerce.domain.model.product.Product.validateProductId;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -84,6 +90,91 @@ public class ProductServiceTest {
             assertEquals(mockProduct.getName(), productDetail.getName());
             assertEquals(mockProduct.getId(), productDetail.getId());
             verify(productRepository, times(1)).findById(productId);
+        }
+    }
+
+    @Nested
+    public class GetProducts_UnitTest {
+        @Test
+        @DisplayName("상품데이터가 존재하지 않으면 빈 리스트로 응답한다")
+        void test_getProducts_shouldReturn_empty_list () {
+            // given
+            int page = 1;
+            int offset = page -1;
+            Pageable pageable = PageRequest.of(offset, PAGINATION_LIMIT);
+            when(productRepository.findAll(pageable)).thenReturn(new PageImpl<>(Collections.emptyList(), pageable, 0));
+
+            // when
+            PageResponse<ProductResponse> response = productService.getProducts(page);
+
+            // then
+            assertEquals(0, response.getContent().size()); // 페이지당 나타내는 상품리스트
+            assertEquals(0, response.getTotalElements()); // 전체 상품 개수
+            assertEquals(0, response.getTotalPages()); // 전체 상품 토탈 페이징수
+        }
+        @Test
+        @DisplayName("상품데이터 10개이상 존재할 경우 1 페이지의 10개 데이터 리스트로 응답한다")
+        void test_getProducts_firstPage_shouldReturn_list () {
+            // given
+            int page = 1;
+            int offset = page -1;
+            Pageable pageable = PageRequest.of(offset, PAGINATION_LIMIT);
+
+            // 상품결과를 10개를 나타냄.
+            List<Product> mockProducts = IntStream.range(1, 11)
+                    .mapToObj(i -> new Product(
+                            (long)i,
+                            "상품 "+i,
+                            1000 * i,
+                            "상품 "+i+" 설명",
+                            10,
+                            "판매자",
+                            "seller@example.com",
+                            "01012345678"
+                    )).toList();
+
+            // 전체 데이터개수(total) 20개 중 상품결과 10개를 나타내도록 mocking
+            when(productRepository.findAll(pageable)).thenReturn(new PageImpl<>(mockProducts, pageable, 20));
+
+            // when
+            PageResponse<ProductResponse> response = productService.getProducts(page);
+
+            // then
+            assertEquals(10, response.getContent().size()); // 1페이지의 상품개수
+            assertEquals(20, response.getTotalElements()); // 전체 상품개수 20개
+            assertEquals(2, response.getTotalPages()); // 전체 페이지 개수
+        }
+        @Test
+        @DisplayName("상품 데이터 10개이상 존재할 경우 2페이지의 10개 데이터 리스트로 응답한다")
+        void test_getProducts_secondPage_shouldReturn_list () {
+            // given
+            int page = 2;
+            int offset = page -1;
+            Pageable pageable = PageRequest.of(offset, PAGINATION_LIMIT);
+
+            // 상품결과를 10개를 나타냄.
+            List<Product> mockProducts = IntStream.range(11, 21)
+                    .mapToObj(i -> new Product(
+                            (long) i,
+                            "상품 "+i,
+                            1000 * i,
+                            "상품"+i+" 설명",
+                            10,
+                            "판매자",
+                            "seller@example.com",
+                            "01012345678"
+                    )).toList();
+
+            // 전체 데이터개수(total) 20개 중 상품결과 10개를 나타내도록 mocking
+            when(productRepository.findAll(pageable)).thenReturn(new PageImpl<>(mockProducts, pageable, 20));
+
+            // when
+            PageResponse<ProductResponse> response = productService.getProducts(page);
+
+            // then
+            assertEquals(10, response.getContent().size());
+            assertEquals(20, response.getTotalElements());
+            assertEquals(2, response.getTotalPages());
         }
     }
 }
