@@ -20,6 +20,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Orderment extends BaseEntity {
+    public static final int MINIMUM_TOTAL_PRICE = 1000;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -49,7 +51,7 @@ public class Orderment extends BaseEntity {
     private Payment payment;
 
     // order:orderItem = 1:N
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
     // 생성자
@@ -68,8 +70,8 @@ public class Orderment extends BaseEntity {
     }
 
     public static void validateTotalPrice(int price) {
-        if(price <= 0){
-            throw new InvalidRequestException(OrderErrorCode.ORDER_ORIGIN_TOTAL_PRICE_IS_POSITIVE_NUMBER_POLICY);
+        if(price < MINIMUM_TOTAL_PRICE){
+            throw new InvalidRequestException(OrderErrorCode.ORDER_ORIGIN_TOTAL_PRICE_IS_MORE_THAN_MINIMUM_TOTAL_PRICE_POLICY);
         }
     }
 

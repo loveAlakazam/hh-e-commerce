@@ -8,9 +8,11 @@ import io.hh_plus.ecommerce.ecommerce.domain.model.product.Product;
 import io.hh_plus.ecommerce.ecommerce.domain.model.user.User;
 import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.request.CreateOrderItemRequestDto;
 import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.request.CreateOrderItemServiceRequestDto;
-import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.request.CreateOrderServiceRequestDto;
+import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.request.CreateOrderRequestDto;
+import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.response.OrderResponse;
 import io.hh_plus.ecommerce.ecommerce.domain.service.product.exception.ProductErrorCode;
 import io.hh_plus.ecommerce.ecommerce.domain.service.user.exception.UserErrorCode;
+import io.hh_plus.ecommerce.ecommerce.mapper.order.OrderMapper;
 import io.hh_plus.ecommerce.ecommerce.repository.order.OrderRepository;
 import io.hh_plus.ecommerce.ecommerce.repository.product.ProductRepository;
 import io.hh_plus.ecommerce.ecommerce.repository.user.UserRepository;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements  OrderService {
@@ -32,18 +35,22 @@ public class OrderServiceImpl implements  OrderService {
     }
 
     @Override
-    public void create(CreateOrderServiceRequestDto requestDto) {
-        // 1. 주문 요청 유저 아이디를 검증한다.
+    public void create(CreateOrderRequestDto requestDto) {
+        // 주문 요청 유저 아이디를 검증한다.
         User user = userRepository.findById(requestDto.getUserId()).orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
-        // 2. 요청 유저가 주문한 주문아이템 리스트를 찾는다.
+        // 주문 생성
+        Orderment order = new Orderment();
+        order.setUser(user);
+        order.setPaymentStatus(PaymentStatus.PENDING);
+
+        // 요청 유저가 주문한 주문아이템 리스트를 찾는다.
         List<CreateOrderItemRequestDto> orderItemsRequest = requestDto.getOrderItems();
         List<OrderItem> orderItems = new ArrayList<>();
-
         int totalQuantity = 0;
         int totalPrice = 0;
 
-        // 3. 주문아이템의 상품이 실제로 존재하는지 확인하기.
+        // 주문아이템의 상품이 실제로 존재하는지 확인하기.
         // - 주문아이템 리스트 요소의 구성요소는 '주문 아이템 아이디', '상품아이디', '상품가격', '상품개수' 로 구성되어있다.
         for(CreateOrderItemRequestDto itemRequest : orderItemsRequest) {
             // 상품 검증
@@ -60,6 +67,7 @@ public class OrderServiceImpl implements  OrderService {
             orderItem.setProduct(product);
             orderItem.setQuantity(itemRequest.getQuantity());
             orderItem.setPrice(product.getPrice() * itemRequest.getQuantity());
+            orderItem.setOrder(order); // 주문객체와 연결
             orderItems.add(orderItem);
 
             // 총수량 & 총주문개수
@@ -68,16 +76,17 @@ public class OrderServiceImpl implements  OrderService {
         }
 
         Orderment.validateTotalQuantity(totalQuantity); // totalQuantity 검증
-        Orderment.validateTotalPrice(totalPrice);// totalPrice 검증
+        Orderment.validateTotalPrice(totalPrice); // totalPrice 검증
 
-        Orderment order = new Orderment();
-        order.setUser(user);
+        // 주문 최종 설정 및 저장
         order.setPrice(totalPrice);
         order.setQuantity(totalQuantity);
         order.setOrderItems(orderItems);
-        order.setPaymentStatus(PaymentStatus.PENDING);
-
-        // 4. 주문아이템 리스트, 전체주문상품가격 , 전체주문상품개수, 주문요청자 정보를 주문테이블에 저장한다
         orderRepository.save(order);
+    }
+
+    @Override
+    public Optional<OrderResponse> getOrderById(long id) {
+        return orderRepository.findById(id).map(OrderMapper::toOrderResponse);
     }
 }
