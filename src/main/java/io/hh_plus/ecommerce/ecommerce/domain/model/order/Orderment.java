@@ -1,9 +1,11 @@
 package io.hh_plus.ecommerce.ecommerce.domain.model.order;
 
+import io.hh_plus.ecommerce.ecommerce.application.exceptions.InvalidRequestException;
 import io.hh_plus.ecommerce.ecommerce.domain.model.common.BaseEntity;
 import io.hh_plus.ecommerce.ecommerce.domain.model.payment.Payment;
 import io.hh_plus.ecommerce.ecommerce.domain.model.product.Product;
 import io.hh_plus.ecommerce.ecommerce.domain.model.user.User;
+import io.hh_plus.ecommerce.ecommerce.domain.service.order.exception.OrderErrorCode;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +20,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Orderment extends BaseEntity {
+    public static final int MINIMUM_TOTAL_PRICE = 1000;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -45,5 +49,30 @@ public class Orderment extends BaseEntity {
     @OneToOne
     @JoinColumn(name="payment_id")
     private Payment payment;
+
+    // order:orderItem = 1:N
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems;
+
+    // 생성자
+    public Orderment(int quantity, int price, PaymentStatus paymentStatus, User user) {
+        this.quantity = quantity;
+        this.price = price;
+        this.paymentStatus = paymentStatus;
+        this.user = user; // 주문 회원
+    }
+
+    // 검증함수
+    public static void validateTotalQuantity(int quantity) {
+        if (quantity <= 0) {
+            throw new InvalidRequestException(OrderErrorCode.ORDER_TOTAL_QUANTITY_IS_POSITIVE_NUMBER_POLICY);
+        }
+    }
+
+    public static void validateTotalPrice(int price) {
+        if(price < MINIMUM_TOTAL_PRICE){
+            throw new InvalidRequestException(OrderErrorCode.ORDER_TOTAL_PRICE_IS_MORE_THAN_MINIMUM_TOTAL_PRICE_POLICY);
+        }
+    }
 
 }

@@ -1,11 +1,16 @@
 package io.hh_plus.ecommerce.ecommerce.domain.service.order;
 
-import io.hh_plus.ecommerce.ecommerce.repository.order.OrderRepository;
-import org.springframework.stereotype.Service;
+import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.request.CreateOrderRequestDto;
+import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.response.OrderResponse;
+
+import java.util.Optional;
 
 
 public interface OrderService {
     // 주문을 생성한다
-    public void create(long userId, long productId, int quantity, int price);
+    void create(CreateOrderRequestDto requestDto);
+
+    // 주문 아이디로 주문을 조회한다
+    OrderResponse getOrderById(long id);
 
 }
