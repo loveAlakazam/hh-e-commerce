@@ -25,7 +25,7 @@ public class OrderController {
 
     // 주문 조회 API
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<OrderResponse>> getOrderById(@PathVariable long id) {
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable long id) {
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
 }

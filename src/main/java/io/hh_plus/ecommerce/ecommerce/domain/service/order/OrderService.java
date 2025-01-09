@@ -11,6 +11,6 @@ public interface OrderService {
     void create(CreateOrderRequestDto requestDto);
 
     // 주문 아이디로 주문을 조회한다
-    Optional<OrderResponse> getOrderById(long id);
+    OrderResponse getOrderById(long id);
 
 }

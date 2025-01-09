@@ -10,6 +10,7 @@ import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.request.CreateOrd
 import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.request.CreateOrderItemServiceRequestDto;
 import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.request.CreateOrderRequestDto;
 import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.response.OrderResponse;
+import io.hh_plus.ecommerce.ecommerce.domain.service.order.exception.OrderErrorCode;
 import io.hh_plus.ecommerce.ecommerce.domain.service.product.exception.ProductErrorCode;
 import io.hh_plus.ecommerce.ecommerce.domain.service.user.exception.UserErrorCode;
 import io.hh_plus.ecommerce.ecommerce.mapper.order.OrderMapper;
@@ -86,7 +87,9 @@ public class OrderServiceImpl implements  OrderService {
     }
 
     @Override
-    public Optional<OrderResponse> getOrderById(long id) {
-        return orderRepository.findById(id).map(OrderMapper::toOrderResponse);
+    public OrderResponse getOrderById(long id) {
+        return orderRepository.findById(id)
+                .map(OrderMapper::toOrderResponse)
+                .orElseThrow(() -> new BusinessException(OrderErrorCode.ORDER_NOT_FOUND));
     }
 }
