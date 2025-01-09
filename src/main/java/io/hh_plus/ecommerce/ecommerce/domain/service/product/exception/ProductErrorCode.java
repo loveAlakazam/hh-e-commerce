@@ -8,13 +8,13 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ProductErrorCode implements IErrorCode {
     // 상품 정책 관련 에러
-    PRODUCT_ID_POSITIVE_NUMBER_POLICY(HttpStatus.BAD_REQUEST, "상품 식별자는 양수여야 합니다."),
-    PRODUCT_PAGE_POSITIVE_NUMBER_POLICY(HttpStatus.BAD_REQUEST, "상품 페이지는 1이상의 양수여야 합니다."),
+    PRODUCT_ID_POSITIVE_NUMBER_POLICY (HttpStatus.BAD_REQUEST, "상품 식별자는 양수여야 합니다."),
+    PRODUCT_PAGE_POSITIVE_NUMBER_POLICY (HttpStatus.BAD_REQUEST, "상품 페이지는 1이상의 양수여야 합니다."),
+    PRODUCT_LACK_OF_STOCK_POLICY (HttpStatus.BAD_REQUEST, "상품의 재고가 부족합니다."),
 
     // 상품 비즈니스 관련 에러
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않은 상품입니다.")
     ;
-
 
     // 에러 정의
     private final HttpStatus httpStatus;

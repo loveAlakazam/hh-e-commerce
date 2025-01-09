@@ -7,8 +7,8 @@ import lombok.*;
 @Builder
 @Getter
 public class ChargePointServiceRequestDto {
-    private long userId;
-    private int amount;
+    private final long userId;
+    private final int amount;
 
     public ChargePointServiceRequestDto(long userId, int amount) {
         User.validateUserId(userId); // userId 유효성검증

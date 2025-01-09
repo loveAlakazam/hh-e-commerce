@@ -30,7 +30,7 @@ public class OrderItem extends BaseEntity {
 
     // order:order_item=1:N
     @ManyToOne
-    @JoinColumn(name="order_id", nullable = false)
+    @JoinColumn(name="order_id", nullable = true)
     private Orderment order;
 
     // order_item:product=1:1
