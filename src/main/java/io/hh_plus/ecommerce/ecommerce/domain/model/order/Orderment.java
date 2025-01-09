@@ -71,7 +71,7 @@ public class Orderment extends BaseEntity {
 
     public static void validateTotalPrice(int price) {
         if(price < MINIMUM_TOTAL_PRICE){
-            throw new InvalidRequestException(OrderErrorCode.ORDER_ORIGIN_TOTAL_PRICE_IS_MORE_THAN_MINIMUM_TOTAL_PRICE_POLICY);
+            throw new InvalidRequestException(OrderErrorCode.ORDER_TOTAL_PRICE_IS_MORE_THAN_MINIMUM_TOTAL_PRICE_POLICY);
         }
     }
 

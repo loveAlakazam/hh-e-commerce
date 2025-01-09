@@ -4,11 +4,13 @@ import io.hh_plus.ecommerce.ecommerce.application.exceptions.IErrorCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import static io.hh_plus.ecommerce.ecommerce.domain.model.order.Orderment.MINIMUM_TOTAL_PRICE;
+
 @Getter
 public enum OrderErrorCode implements IErrorCode {
     // 주문 정책 관련 에러
     ORDER_TOTAL_QUANTITY_IS_POSITIVE_NUMBER_POLICY(HttpStatus.BAD_REQUEST, "총 주문수량은 최소 1개 이상이어야 합니다."),
-    ORDER_ORIGIN_TOTAL_PRICE_IS_POSITIVE_NUMBER_POLICY(HttpStatus.BAD_REQUEST, "총 주문금액은 ")
+    ORDER_TOTAL_PRICE_IS_MORE_THAN_MINIMUM_TOTAL_PRICE_POLICY(HttpStatus.BAD_REQUEST, "총 주문금액은 "+MINIMUM_TOTAL_PRICE+"원 이상이어야 합니다.")
     // 주문 비즈니스 로직 관련 에러
     ;
 
