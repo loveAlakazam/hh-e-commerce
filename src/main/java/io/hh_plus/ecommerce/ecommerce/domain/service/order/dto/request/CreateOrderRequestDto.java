@@ -8,11 +8,11 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class CreateOrderServiceRequestDto {
+public class CreateOrderRequestDto {
     private long userId;
     private List<CreateOrderItemRequestDto> orderItems;
 
-    public CreateOrderServiceRequestDto(long userId, List<CreateOrderItemRequestDto> orderItems) {
+    public CreateOrderRequestDto(long userId, List<CreateOrderItemRequestDto> orderItems) {
         User.validateUserId(userId); // userId 유효성 검증
 
         this.userId = userId;

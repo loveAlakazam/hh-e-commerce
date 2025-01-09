@@ -5,7 +5,7 @@ import io.hh_plus.ecommerce.ecommerce.domain.model.order.Orderment;
 import io.hh_plus.ecommerce.ecommerce.domain.model.product.Product;
 import io.hh_plus.ecommerce.ecommerce.domain.model.user.User;
 import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.request.CreateOrderItemRequestDto;
-import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.request.CreateOrderServiceRequestDto;
+import io.hh_plus.ecommerce.ecommerce.domain.service.order.dto.request.CreateOrderRequestDto;
 import io.hh_plus.ecommerce.ecommerce.repository.order.OrderRepository;
 import io.hh_plus.ecommerce.ecommerce.repository.product.ProductRepository;
 import io.hh_plus.ecommerce.ecommerce.repository.user.UserRepository;
@@ -49,7 +49,7 @@ public class OrderServiceTest {
         long productId = 1L;
 
         CreateOrderItemRequestDto item = new CreateOrderItemRequestDto(productId, 1); // 주문항목- productId: 1 상품 1개
-        CreateOrderServiceRequestDto requestDto = new CreateOrderServiceRequestDto(userId, Collections.singletonList(item));
+        CreateOrderRequestDto requestDto = new CreateOrderRequestDto(userId, Collections.singletonList(item));
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         // when
@@ -71,7 +71,7 @@ public class OrderServiceTest {
         user.setId(userId);
 
         CreateOrderItemRequestDto item = new CreateOrderItemRequestDto(productId, 1); // 주문항목- productId: 1 상품 1개
-        CreateOrderServiceRequestDto requestDto = new CreateOrderServiceRequestDto(userId, Collections.singletonList(item));
+        CreateOrderRequestDto requestDto = new CreateOrderRequestDto(userId, Collections.singletonList(item));
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
@@ -108,7 +108,7 @@ public class OrderServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
         CreateOrderItemRequestDto item = new CreateOrderItemRequestDto(productId, 1); // 주문항목- productId: 1 상품 1개
-        CreateOrderServiceRequestDto requestDto = new CreateOrderServiceRequestDto(userId, Collections.singletonList(item));
+        CreateOrderRequestDto requestDto = new CreateOrderRequestDto(userId, Collections.singletonList(item));
 
         // when
         assertThrows(BusinessException.class, () -> orderService.create(requestDto));
@@ -135,7 +135,7 @@ public class OrderServiceTest {
 
         CreateOrderItemRequestDto item1 = new CreateOrderItemRequestDto(productId1, 1); // 주문항목- productId: 1 상품 1개
         CreateOrderItemRequestDto item2 = new CreateOrderItemRequestDto(productId2, 2); // 주문항목- productId: 2 상품 2개
-        CreateOrderServiceRequestDto requestDto = new CreateOrderServiceRequestDto(userId, Arrays.asList(item1, item2));
+        CreateOrderRequestDto requestDto = new CreateOrderRequestDto(userId, Arrays.asList(item1, item2));
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(productRepository.findById(productId1)).thenReturn(Optional.of(product1));
